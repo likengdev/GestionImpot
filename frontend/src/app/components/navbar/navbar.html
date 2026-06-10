@@ -1,0 +1,27 @@
+<nav class="navbar-top">
+  <div class="navbar-left">
+    <h4><i class="bi bi-building"></i> Système de Gestion des Impôts</h4>
+  </div>
+
+  <div class="navbar-right">
+    <div class="user-menu" (click)="toggleDropdown()">
+      <div class="user-avatar">
+        {{ username.charAt(0).toUpperCase() }}
+      </div>
+      <div class="user-text">
+        <span class="user-name">{{ username }}</span>
+        <span class="user-role">{{ getRoleLabel() }}</span>
+      </div>
+      <i class="bi" [ngClass]="showDropdown ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+
+      @if (showDropdown) {
+        <div class="dropdown-menu-custom" (click)="$event.stopPropagation()">
+          <div class="dropdown-item-custom text-danger" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Déconnexion</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</nav>

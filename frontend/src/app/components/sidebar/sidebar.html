@@ -1,0 +1,36 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <i class="bi bi-building"></i>
+    <span>GestImpôts</span>
+  </div>
+
+  <div class="user-info">
+    <div class="user-avatar" [style.background]="getRoleColor()">
+      {{ username.charAt(0).toUpperCase() }}
+    </div>
+    <div class="user-details">
+      <span class="user-name">{{ username }}</span>
+      <span class="user-role">{{ getRoleBadge() }}</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      @for (item of menuItems; track item.route) {
+        <li class="nav-item">
+          <a [routerLink]="item.route" routerLinkActive="active">
+            <i class="{{ item.icon }}"></i>
+            <span>{{ item.label }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="btn-logout" (click)="logout()">
+      <i class="bi bi-box-arrow-left"></i>
+      <span>Déconnexion</span>
+    </button>
+  </div>
+</aside>

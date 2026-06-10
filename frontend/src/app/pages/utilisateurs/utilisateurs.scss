@@ -1,0 +1,37 @@
+.app-layout {
+  display: flex; min-height: 100vh; background: #f4f6f9;
+  .main-content { margin-left: 240px; flex: 1;
+    .page-content { margin-top: 60px; padding: 32px;
+      .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
+        h2 { font-size: 26px; font-weight: 700; color: #1a237e; margin: 0; }
+        p { font-size: 14px; color: #666; margin: 4px 0 0; }
+      }
+      .btn-add { display: flex; align-items: center; gap: 8px; background: #1a237e; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; &:hover { background: #283593; } i { font-size: 16px; } }
+      .alert-success { display: flex; align-items: center; gap: 8px; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 14px; font-weight: 500; }
+      .alert-warning { background: #fff8e1; color: #e65100; border: 1px solid #ffe082; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 14px; font-weight: 500; i { margin-right: 8px; } }
+      .alert-error { display: flex; align-items: center; gap: 8px; background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 14px; font-weight: 500; }
+      .table-card { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); overflow: hidden;
+        .data-table { width: 100%; border-collapse: collapse;
+          thead tr { background: #f0f4ff; th { padding: 14px 16px; text-align: left; font-size: 13px; font-weight: 700; color: #1a237e; border-bottom: 2px solid #e8eaf6; } }
+          tbody tr { transition: background 0.15s; &:hover { background: #f8f9ff; } td { padding: 14px 16px; font-size: 14px; color: #333; border-bottom: 1px solid #f0f0f0; } &:last-child td { border-bottom: none; } }
+          .text-center { text-align: center; padding: 24px !important; color: #666; }
+          .badge-yellow { background: #fff8e1; color: #e65100; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+          .badge-blue { background: #e3f2fd; color: #1565c0; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+          .badge-green { background: #e8f5e9; color: #2e7d32; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+          .badge-success { background: #e8f5e9; color: #2e7d32; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+          .badge-danger { background: #ffebee; color: #c62828; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+          .btn-supprimer { display: inline-flex; align-items: center; gap: 6px; background: #d32f2f; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; &:hover { background: #b71c1c; } i { font-size: 14px; } }
+        }
+      }
+    }
+  }
+}
+.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px;
+  .modal-card { background: white; border-radius: 16px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; background: white; z-index: 1; h4 { font-size: 18px; font-weight: 700; color: #1a237e; margin: 0; } .btn-fermer { background: #f5f5f5; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #666; &:hover { background: #e0e0e0; color: #333; } } }
+    .info-banner { padding: 12px 24px; background: #e8f5e9; border-bottom: 1px solid #f0f0f0; font-size: 13px; color: #2e7d32; display: flex; align-items: center; gap: 8px; }
+    .alert-error { margin: 12px 24px 0; padding: 12px 16px; background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; border-radius: 8px; font-size: 14px; }
+    form { padding: 24px; .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; } .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; label { font-size: 13px; font-weight: 600; color: #333; } input, select { padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; transition: border 0.2s; background: white; &:focus { border-color: #1a237e; box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.08); } } .error-msg { font-size: 12px; color: #ef5350; } } .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px; padding-top: 16px; border-top: 1px solid #f0f0f0; .btn-annuler { padding: 10px 20px; border: 1px solid #e0e0e0; border-radius: 8px; background: white; color: #666; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; &:hover { background: #f5f5f5; } } .btn-creer { display: flex; align-items: center; gap: 8px; padding: 10px 24px; border: none; border-radius: 8px; background: #1a237e; color: white; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; &:hover:not(:disabled) { background: #283593; } &:disabled { background: #9e9e9e; cursor: not-allowed; } i { font-size: 16px; } } } }
+  }
+}
+.modal-suppression { .modal-card { max-width: 420px; .modal-header h4 { color: #d32f2f; display: flex; align-items: center; gap: 8px; } .suppression-body { padding: 24px; .user-info { background: #fff3e0; border: 1px solid #ffcc02; border-radius: 8px; padding: 16px; margin: 12px 0; .user-nom { font-size: 16px; font-weight: 700; color: #d32f2f; margin: 0 0 4px; } .user-role { font-size: 13px; color: #666; margin: 0; } } .avertissement { font-size: 13px; color: #666; margin: 0; line-height: 1.5; } } .modal-actions { padding: 16px 24px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 12px; .btn-annuler { padding: 10px 20px; border: 1px solid #e0e0e0; border-radius: 8px; background: white; color: #666; font-size: 14px; cursor: pointer; &:hover { background: #f5f5f5; } } .btn-supprimer-confirm { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border: none; border-radius: 8px; background: #d32f2f; color: white; font-size: 14px; font-weight: 600; cursor: pointer; &:hover { background: #b71c1c; } } } } }

@@ -1,0 +1,110 @@
+<div class="app-layout">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <div class="page-content">
+      <div class="page-header">
+        <div>
+          <h2>Déclarations Fiscales</h2>
+          <p>{{ declarations.length }} déclaration(s)</p>
+        </div>
+        <button class="btn-add" (click)="openAddModal()"><i class="bi bi-plus-lg"></i> Nouvelle Déclaration</button>
+      </div>
+
+      @if (successMessage) { <div class="alert-success"><i class="bi bi-check-circle"></i> {{ successMessage }}</div> }
+      @if (errorMessage && !showModal) { <div class="alert-error"><i class="bi bi-exclamation-triangle"></i> {{ errorMessage }}</div> }
+
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Contribuable</th>
+              <th>Période</th>
+              <th>Montant Déclaré</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (declarations.length === 0) {
+              <tr><td colspan="5" class="text-center">Aucune déclaration trouvée.</td></tr>
+            }
+            @for (d of declarations; track d.id) {
+              <tr>
+                <td><strong>{{ d.contribuable_nom }}</strong></td>
+                <td>{{ d.periode }}</td>
+                <td>{{ d.montant_declare | number:'1.0-0' }} FCFA</td>
+                <td><span class="badge" [ngClass]="getStatutClass(d.statut)">{{ getStatutLabel(d.statut) }}</span></td>
+                <td class="actions">
+                  @if (d.statut === 'brouillon' && peutSoumettre) {
+                    <button class="btn-submit" (click)="soumettre(d.id!)" [disabled]="actionEnCours === d.id" title="Soumettre">
+                      @if (actionEnCours === d.id) { <i class="bi bi-hourglass-split"></i> } @else { <i class="bi bi-send"></i> }
+                    </button>
+                  }
+                  @if (d.statut === 'soumise' && peutValider) {
+                    <button class="btn-validate" (click)="valider(d.id!)" [disabled]="actionEnCours === d.id" title="Valider">
+                      @if (actionEnCours === d.id) { <i class="bi bi-hourglass-split"></i> } @else { <i class="bi bi-check-lg"></i> }
+                    </button>
+                    <button class="btn-reject" (click)="rejeter(d.id!)" [disabled]="actionEnCours === d.id" title="Rejeter">
+                      @if (actionEnCours === d.id) { <i class="bi bi-hourglass-split"></i> } @else { <i class="bi bi-x-lg"></i> }
+                    </button>
+                  }
+                  @if (d.statut !== 'soumise') {
+                    <button class="btn-edit" (click)="openEditModal(d)" title="Modifier"><i class="bi bi-pencil"></i></button>
+                    <button class="btn-delete" (click)="delete(d.id!)" title="Supprimer"><i class="bi bi-trash"></i></button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (showModal) {
+        <div class="modal-overlay" (click)="closeModal()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <h4>{{ isEditing ? 'Modifier' : 'Nouvelle déclaration' }}</h4>
+              <button (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              @if (errorMessage) { <div class="alert-error" style="margin: 0 24px 16px;">{{ errorMessage }}</div> }
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Contribuable *</label>
+                  <select formControlName="contribuable">
+                    <option value="" disabled>Sélectionner</option>
+                    @for (c of contribuables; track c.id) { <option [value]="c.id">{{ c.nom }} {{ c.prenom }}</option> }
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Impôt *</label>
+                  <select formControlName="impot">
+                    <option value="" disabled>Sélectionner</option>
+                    @for (i of impots; track i.id) { <option [value]="i.id">{{ i.contribuable_nom }} - {{ i.type_impot }}</option> }
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group"><label>Période *</label><input type="text" formControlName="periode" /></div>
+                <div class="form-group">
+                  <label>Montant déclaré (FCFA) *</label>
+                  <input type="number" formControlName="montant_declare" />
+                </div>
+              </div>
+
+              <div class="modal-actions">
+                <button type="button" class="btn-cancel" (click)="closeModal()">Annuler</button>
+                <button type="submit" class="btn-save" [disabled]="isSubmitting">
+                  @if (isSubmitting) { <i class="bi bi-hourglass-split"></i> Enregistrement... } @else { {{ isEditing ? 'Modifier' : 'Enregistrer' }} }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

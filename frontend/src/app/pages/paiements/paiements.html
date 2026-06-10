@@ -1,0 +1,105 @@
+<div class="app-layout">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <div class="page-content">
+      <div class="page-header">
+        <div>
+          <h2>Paiements</h2>
+          <p>Enregistrez et suivez les paiements</p>
+        </div>
+        <button class="btn-add" (click)="openAddModal()"><i class="bi bi-plus-lg"></i> Nouveau Paiement</button>
+      </div>
+
+      @if (successMessage) { <div class="alert-success"><i class="bi bi-check-circle"></i> {{ successMessage }}</div> }
+      @if (errorMessage && !showModal) { <div class="alert-error"><i class="bi bi-exclamation-triangle"></i> {{ errorMessage }}</div> }
+
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Contribuable</th>
+              <th>Montant Payé</th>
+              <th>Mode</th>
+              <th>Référence</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (paiements.length === 0) {
+              <tr><td colspan="6" class="text-center">Aucun paiement trouvé.</td></tr>
+            }
+            @for (p of paiements; track p.id) {
+              <tr>
+                <td><strong>{{ p.contribuable_nom }}</strong></td>
+                <td>{{ p.montant_paye | number:'1.0-0' }} FCFA</td>
+                <td><span class="badge badge-secondary">{{ p.mode_paiement | titlecase }}</span></td>
+                <td>{{ p.reference }}</td>
+                <td>{{ p.date_paiement | date:'dd/MM/yyyy' }}</td>
+                <td class="actions">
+                  <button class="btn-delete" (click)="delete(p.id!)" title="Supprimer"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (showModal) {
+        <div class="modal-overlay" (click)="closeModal()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <h4>Nouveau paiement</h4>
+              <button (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              @if (errorMessage) { <div class="alert-error" style="margin: 0 24px 16px;">{{ errorMessage }}</div> }
+              
+              <div class="form-group">
+                <label>Impôt *</label>
+                <select formControlName="impot">
+                  <option value="" disabled>Sélectionner un impôt</option>
+                  @for (i of impots; track i.id) {
+                    <option [value]="i.id">{{ i.contribuable_nom }} - {{ i.type_impot }} ({{ i.montant | number:'1.0-0' }} FCFA)</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Montant payé (FCFA) *</label>
+                  <input type="number" formControlName="montant_paye" />
+                </div>
+                <div class="form-group">
+                  <label>Mode de paiement *</label>
+                  <select formControlName="mode_paiement">
+                    <option value="" disabled>Sélectionner</option>
+                    @for (m of modesPayment; track m.value) { <option [value]="m.value">{{ m.label }}</option> }
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Référence *</label>
+                <input type="text" formControlName="reference" />
+              </div>
+
+              <div class="form-group">
+                <label>Commentaire</label>
+                <textarea formControlName="commentaire" rows="3"></textarea>
+              </div>
+
+              <div class="modal-actions">
+                <button type="button" class="btn-cancel" (click)="closeModal()">Annuler</button>
+                <button type="submit" class="btn-save" [disabled]="isSubmitting">
+                  @if (isSubmitting) { <i class="bi bi-hourglass-split"></i> Enregistrement... } @else { Enregistrer }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

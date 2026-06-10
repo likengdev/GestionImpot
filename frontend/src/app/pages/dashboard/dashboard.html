@@ -1,0 +1,121 @@
+<div class="app-layout">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="page-content">
+      <div class="page-header">
+        <div>
+          <h2>Tableau de Bord</h2>
+          <p>Vue d'ensemble de votre système fiscal</p>
+        </div>
+        <div class="theme-picker-wrapper">
+          <button class="btn-theme-toggle" (click)="toggleThemePicker($event)">
+            <i class="bi bi-palette"></i> {{ getThemeLabel() }}
+          </button>
+          @if (showThemePicker) {
+            <div class="theme-panel">
+              <div class="theme-panel-title">Choisir un thème</div>
+              <div class="theme-options">
+                @for (theme of themes; track theme.key) {
+                  <button class="theme-option" [class.active]="currentTheme === theme.key" (click)="selectTheme(theme.key)">
+                    <div class="theme-swatch" [style.background]="theme.primary"></div>
+                    <span class="theme-name">{{ theme.label }}</span>
+                    @if (currentTheme === theme.key) {
+                      <i class="bi bi-check-lg theme-check"></i>
+                    }
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card card-indigo">
+          <div class="stat-icon-box"><i class="bi bi-people"></i></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ dashboardData.contribuables_enregistres | number }}</span>
+            <span class="stat-label">Contribuables enregistrés</span>
+          </div>
+        </div>
+        <div class="stat-card card-emerald">
+          <div class="stat-icon-box"><i class="bi bi-cash-stack"></i></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ formatMontant(dashboardData.total_impots_collectes) }}</span>
+            <span class="stat-label">Paiements collectés FCFA</span>
+          </div>
+        </div>
+        <div class="stat-card card-amber">
+          <div class="stat-icon-box"><i class="bi bi-exclamation-circle"></i></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ formatMontant(dashboardData.impots_impayes) }}</span>
+            <span class="stat-label">Impôts impayés FCFA</span>
+          </div>
+        </div>
+        <div class="stat-card card-rose">
+          <div class="stat-icon-box"><i class="bi bi-shield-exclamation"></i></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ formatMontant(dashboardData.penalites_en_retard) }}</span>
+            <span class="stat-label">Pénalités en retard (FCFA)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="bi bi-bar-chart"></i> Revenus Fiscaux Mensuels</h5>
+          </div>
+          <div class="card-body">
+            <canvas #revenusChart></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="bi bi-activity"></i> Activité Récente</h5>
+          </div>
+          <div class="card-body">
+            @if (dashboardData.activite_recente.length === 0) {
+              <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>Aucune activité récente</p>
+              </div>
+            }
+            @for (item of dashboardData.activite_recente; track $index) {
+              <div class="activity-item">
+                <div class="activity-icon" [ngClass]="item.type">
+                  @if (item.type === 'paiement') { <i class="bi bi-cash"></i> }
+                  @if (item.type === 'declaration') { <i class="bi bi-file-text"></i> }
+                  @if (item.type === 'penalite') { <i class="bi bi-exclamation-triangle"></i> }
+                </div>
+                <p class="activity-message">{{ item.message }}</p>
+                <span class="badge" [ngClass]="getStatutClass(item.statut)">{{ getStatutLabel(item.statut) }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        @if (estAdmin()) {
+          <button class="btn-action primary" routerLink="/contribuables">
+            <i class="bi bi-person-plus"></i> Nouveau Contribuable
+          </button>
+          <button class="btn-action success" routerLink="/impots">
+            <i class="bi bi-plus-circle"></i> Gérer les Impôts
+          </button>
+        }
+        @if (!estAdmin()) {
+          <button class="btn-action primary" routerLink="/paiements">
+            <i class="bi bi-credit-card"></i> Enregistrer Paiement
+          </button>
+          <button class="btn-action success" routerLink="/declarations">
+            <i class="bi bi-file-earmark-plus"></i> Soumettre Déclaration
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,198 @@
+<!-- NAVBAR -->
+<header class="landing-nav" id="main-nav">
+  <nav class="nav-inner">
+    <div class="nav-right">
+      <button class="btn-login" (click)="goToLogin()">Se connecter</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO TEXT -->
+  <section class="hero-text-section">
+    <div class="hero-text-inner">
+      <div class="hero-badge">
+        <i class="bi bi-patch-check-fill"></i>
+        Système Officiel de Gestion Fiscale
+      </div>
+      <h1 class="hero-title">
+        Gérez vos impôts simplement et efficacement
+      </h1>
+      <p class="hero-subtitle">
+        Une plateforme moderne et sécurisée pour centraliser, organiser et suivre toutes les opérations fiscales.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" (click)="goToLogin()">
+          Accéder à la plateforme
+          <i class="bi bi-arrow-right"></i>
+        </button>
+        <button class="btn-outline">Voir la démo</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAPTOP ANIMATION -->
+  <section class="laptop-section">
+    <div class="laptop-outer" id="laptop-container">
+      <div class="laptop-wrapper">
+        <!-- Screen -->
+        <div class="laptop-fragment frag-screen">
+          <div class="laptop-screen-frame">
+            <div class="laptop-screen-inner">
+              <img
+                src="/images/ordinateur.jpg"
+                alt="Dashboard"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Keyboard -->
+        <div class="laptop-fragment frag-keyboard">
+          <div class="laptop-keyboard-frame">
+            <div class="laptop-keyboard-bar"></div>
+          </div>
+        </div>
+
+        <!-- Badge Sécurisé -->
+        <div class="laptop-fragment frag-side-l">
+          <div class="floating-badge">
+            <div class="badge-icon green">
+              <i class="bi bi-shield-fill-check"></i>
+            </div>
+            <span>Sécurisé</span>
+          </div>
+        </div>
+
+        <!-- Badge Temps Réel -->
+        <div class="laptop-fragment frag-side-r">
+          <div class="floating-badge">
+            <div class="badge-icon blue">
+              <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <span>Temps Réel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-section">
+    <div class="stats-inner">
+      @for (s of statistiques; track s.label) {
+        <div class="stat-item">
+          <p class="stat-value">{{ s.valeur }}</p>
+          <p class="stat-label">{{ s.label }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="features-inner">
+      <div class="features-header">
+        <h2>Tout ce dont vous avez besoin</h2>
+        <p>Une solution complète pour la gestion fiscale moderne.</p>
+      </div>
+      <div class="features-grid">
+        @for (f of fonctionnalites; track f.titre) {
+          <div class="feature-card">
+            <div class="feature-img">
+              <img [src]="f.image" [alt]="f.titre" />
+            </div>
+            <h3>{{ f.titre }}</h3>
+            <p>{{ f.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITE -->
+  <section class="security-section">
+    <div class="security-inner">
+      <div class="security-image-wrapper">
+        <div class="security-img-container">
+          <img
+            src="images/serveur.jpg"
+            alt="Infrastructure sécurisée"
+          />
+          <div class="security-img-overlay"></div>
+        </div>
+        <div class="security-badge-card">
+          <div class="security-badge-icon">
+            <i class="bi bi-shield-fill-check"></i>
+          </div>
+          <strong>Souveraineté Totale</strong>
+          <p>Hébergement sécurisé sur le territoire national.</p>
+        </div>
+      </div>
+
+      <div class="security-content">
+        <h2>Une Souveraineté Numérique Garantie</h2>
+        <p>
+          Nous utilisons des protocoles de sécurité de niveau bancaire pour protéger chaque transaction.
+          La confiance est le socle de notre engagement institutionnel.
+        </p>
+        <div class="security-features">
+          <div class="security-feature">
+            <div class="sf-icon">
+              <i class="bi bi-shield-lock-fill"></i>
+            </div>
+            <div>
+              <h4>Cryptage de bout en bout</h4>
+              <p>Toutes vos informations sont chiffrées avec les standards AES-256.</p>
+            </div>
+          </div>
+          <div class="security-feature">
+            <div class="sf-icon">
+              <i class="bi bi-person-badge-fill"></i>
+            </div>
+            <div>
+              <h4>Authentification Forte</h4>
+              <p>Sécurisation multicouche obligatoire pour tout accès administratif.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <div class="cta-glow"></div>
+      <div class="cta-content">
+        <h2>Prêt à simplifier votre fiscalité ?</h2>
+        <p>Rejoignez plus de 1,450 contribuables qui utilisent déjà notre plateforme.</p>
+        <div class="cta-actions">
+          <button class="btn-cta-white" (click)="goToLogin()">Ouvrir un compte gratuit</button>
+          <button class="btn-cta-outline">Contacter un expert</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="landing-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <a class="footer-brand">GestImpôts</a>
+      <div class="footer-links">
+        <a href="#">Politique de Confidentialité</a>
+        <a href="#">Mentions Légales</a>
+        <a href="#">Support</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Système Officiel de Gestion Fiscale. Tous droits réservés.</p>
+      <div class="footer-social">
+        <i class="bi bi-facebook"></i>
+        <i class="bi bi-twitter-x"></i>
+      </div>
+    </div>
+  </div>
+</footer>

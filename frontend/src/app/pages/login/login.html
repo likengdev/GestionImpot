@@ -1,0 +1,60 @@
+<div class="login-page">
+  <div class="login-right">
+    <div class="login-card">
+      <div class="login-card-header">
+        <i class="bi bi-building"></i>
+        <h3>Connexion</h3>
+        <p>Entrez vos identifiants pour accéder à la plateforme</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        @if (errorMessage) {
+          <div class="alert-error">
+            <i class="bi bi-exclamation-triangle"></i>
+            {{ errorMessage }}
+          </div>
+        }
+
+        <div class="form-group">
+          <label for="username">Nom d'utilisateur</label>
+          <div class="input-wrapper">
+            <i class="bi bi-person input-icon"></i>
+            <input id="username" type="text" formControlName="username" placeholder="Votre identifiant" [class.error]="username?.invalid && username?.touched" />
+          </div>
+          @if (username?.invalid && username?.touched) {
+            <span class="error-msg">Le nom d'utilisateur est requis.</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <div class="input-wrapper">
+            <i class="bi bi-lock input-icon"></i>
+            <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Votre mot de passe" [class.error]="password?.invalid && password?.touched" />
+            <i class="bi bi-eye input-icon-right" (click)="togglePassword()"></i>
+          </div>
+          @if (password?.invalid && password?.touched) {
+            <span class="error-msg">Le mot de passe doit contenir au moins 8 caractères.</span>
+          }
+        </div>
+
+        <button type="submit" class="btn-login" [disabled]="isLoading">
+          @if (isLoading) {
+            <span class="spinner"></span>
+            Connexion en cours...
+          } @else {
+            <i class="bi bi-box-arrow-in-right"></i>
+            Se connecter
+          }
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <a routerLink="/">
+          <i class="bi bi-arrow-left"></i>
+          Retour à l'accueil
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

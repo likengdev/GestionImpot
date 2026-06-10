@@ -1,0 +1,80 @@
+<div class="app-layout">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+    <app-navbar></app-navbar>
+
+    <div class="page-content">
+      <div class="page-header">
+        <div>
+          <h2>Rapports & Statistiques</h2>
+          <p>Analyses fiscales détaillées</p>
+        </div>
+        <div class="header-actions" style="display: flex; gap: 12px; align-items: center;">
+          <select class="select-annee" [(ngModel)]="anneeSelectionnee" (ngModelChange)="onAnneeChange()">
+            @for (a of annees; track a) {
+              <option [ngValue]="a">{{ a }}</option>
+            }
+          </select>
+          <button class="btn-export" (click)="exporterPDF()" [disabled]="isExporting">
+            @if (isExporting) {
+              <i class="bi bi-hourglass-split"></i> Export...
+            } @else {
+              <i class="bi bi-file-earmark-pdf"></i> Exporter PDF
+            }
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-grid-rapport">
+        <div class="stat-card card-indigo">
+          <div class="stat-icon"><i class="bi bi-people"></i></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ statistiques.contribuables_enregistres | number }}</span>
+            <span class="stat-label">Contribuables</span>
+          </div>
+        </div>
+        <div class="stat-card card-emerald">
+          <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ formatMontant(statistiques.total_impots_collectes) }}</span>
+            <span class="stat-label">Total Collecté (FCFA)</span>
+          </div>
+        </div>
+        <div class="stat-card card-amber">
+          <div class="stat-icon"><i class="bi bi-exclamation-circle"></i></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ formatMontant(statistiques.impots_impayes) }}</span>
+            <span class="stat-label">Impayés (FCFA)</span>
+          </div>
+        </div>
+        <div class="stat-card card-rose">
+          <div class="stat-icon"><i class="bi bi-shield-exclamation"></i></div>
+          <div class="stat-info">
+            <span class="stat-value">{{ formatMontant(statistiques.penalites_en_retard) }}</span>
+            <span class="stat-label">Pénalités (FCFA)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="bi bi-bar-chart"></i> Revenus Mensuels {{ anneeSelectionnee }}</h5>
+          </div>
+          <div class="card-body">
+            <canvas #revenusChart></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="bi bi-pie-chart"></i> Répartition des Impôts</h5>
+          </div>
+          <div class="card-body">
+            <canvas #statutsChart></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

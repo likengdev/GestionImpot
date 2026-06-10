@@ -1,0 +1,10 @@
+@use 'bootstrap/scss/bootstrap' as *;
+@use 'styles/buttons';
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
+  color: #212121;
+}

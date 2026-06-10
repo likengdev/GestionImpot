@@ -1,0 +1,127 @@
+<div class="app-layout">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <div class="page-content">
+      <div class="page-header">
+        <div>
+          <h2>Gestion des Utilisateurs</h2>
+          <p>{{ users.length }} utilisateur(s) dans le système</p>
+        </div>
+        <button class="btn-add" (click)="openModal()"><i class="bi bi-plus-lg"></i> Nouvel Utilisateur</button>
+      </div>
+
+      @if (successMessage) { <div class="alert-success"><i class="bi bi-check-circle"></i> {{ successMessage }}</div> }
+      @if (passwordMessage) { <div class="alert-warning"><i class="bi bi-key"></i> {{ passwordMessage }}</div> }
+      @if (errorMessage && !showModal && !showToggleModal) { <div class="alert-error"><i class="bi bi-exclamation-triangle"></i> {{ errorMessage }}</div> }
+
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Nom d'utilisateur</th>
+              <th>Nom complet</th>
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (users.length === 0) {
+              <tr><td colspan="6" class="text-center">Aucun utilisateur trouvé.</td></tr>
+            }
+            @for (u of users; track u.id) {
+              <tr>
+                <td><strong>{{ u.username }}</strong></td>
+                <td>{{ u.first_name }} {{ u.last_name }}</td>
+                <td>{{ u.email || '—' }}</td>
+                <td><span class="badge" [ngClass]="getRoleClass(u.profil?.role)">{{ getRoleLabel(u.profil?.role) }}</span></td>
+                <td><span class="badge" [ngClass]="estActif(u) ? 'badge-success' : 'badge-danger'">{{ estActif(u) ? 'Actif' : 'Inactif' }}</span></td>
+                <td class="actions">
+                  @if (u.profil?.role !== 'superadmin') {
+                    <button class="btn-supprimer" (click)="confirmerToggle(u)">
+                      @if (estActif(u)) { <i class="bi bi-pause-circle"></i> Désactiver } @else { <i class="bi bi-play-circle"></i> Réactiver }
+                    </button>
+                  } @else { <span class="text-muted">—</span> }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (showModal) {
+        <div class="modal-overlay" (click)="closeModal()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <h4>Créer un utilisateur</h4>
+              <button class="btn-fermer" (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="info-banner"><i class="bi bi-info-circle"></i> Un mot de passe aléatoire sera généré et envoyé par email.</div>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              @if (errorMessage) { <div class="alert-error" style="margin: 0 24px 16px;">{{ errorMessage }}</div> }
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Nom d'utilisateur *</label>
+                  <input type="text" formControlName="username" />
+                  @if (form.get('username')?.invalid && form.get('username')?.touched) { <span class="error-msg">Minimum 3 caractères.</span> }
+                </div>
+                <div class="form-group">
+                  <label>Rôle *</label>
+                  <select formControlName="role">
+                    <option value="gestionnaire">Agent Fiscal</option>
+                    <option value="admin">Chef de Bureau</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Prénom</label><input type="text" formControlName="first_name" /></div>
+                <div class="form-group"><label>Nom</label><input type="text" formControlName="last_name" /></div>
+              </div>
+              <div class="form-group">
+                <label>Email *</label>
+                <input type="email" formControlName="email" placeholder="(reçoit le mot de passe)" />
+                @if (form.get('email')?.invalid && form.get('email')?.touched) { <span class="error-msg">Email invalide.</span> }
+              </div>
+              <div class="modal-actions">
+                <button type="button" class="btn-annuler" (click)="closeModal()">Annuler</button>
+                <button type="submit" class="btn-creer" [disabled]="isSubmitting">
+                  @if (isSubmitting) { <i class="bi bi-hourglass-split"></i> Création... } @else { <i class="bi bi-send"></i> Créer et envoyer email }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      }
+
+      @if (showToggleModal && userToToggle) {
+        <div class="modal-overlay modal-suppression" (click)="annulerToggle()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <h4><i class="bi bi-exclamation-triangle"></i> {{ estActif(userToToggle) ? 'Confirmer la désactivation' : 'Confirmer la réactivation' }}</h4>
+              <button class="btn-fermer" (click)="annulerToggle()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="suppression-body">
+              <p>Utilisateur concerné :</p>
+              <div class="user-info">
+                <p class="user-nom">{{ userToToggle.username }}</p>
+                <p class="user-role">{{ userToToggle.first_name }} {{ userToToggle.last_name }} — {{ getRoleLabel(userToToggle.profil?.role) }}</p>
+              </div>
+              @if (estActif(userToToggle)) { <p class="avertissement">L'utilisateur ne pourra plus se connecter tant qu'il est désactivé.</p> } 
+              @else { <p class="avertissement">L'utilisateur pourra à nouveau se connecter.</p> }
+            </div>
+            <div class="modal-actions">
+              <button class="btn-annuler" (click)="annulerToggle()">Annuler</button>
+              <button class="btn-supprimer-confirm" (click)="toggleUtilisateur()" [disabled]="isToggling">
+                @if (isToggling) { <i class="bi bi-hourglass-split"></i> Traitement... } 
+                @else if (estActif(userToToggle)) { <i class="bi bi-pause-circle"></i> Désactiver } 
+                @else { <i class="bi bi-play-circle"></i> Réactiver }
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<div class="app-layout">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <div class="page-content">
+      <div class="page-header">
+        <div>
+          <h2>Impôts</h2>
+          <p>Gérez tous les impôts</p>
+        </div>
+        <button class="btn-add" (click)="openAddModal()"><i class="bi bi-plus-lg"></i> Nouvel Impôt</button>
+      </div>
+
+      @if (successMessage) { <div class="alert-success"><i class="bi bi-check-circle"></i> {{ successMessage }}</div> }
+      @if (errorMessage && !showModal) { <div class="alert-error"><i class="bi bi-exclamation-triangle"></i> {{ errorMessage }}</div> }
+
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Contribuable</th>
+              <th>Type</th>
+              <th>Montant</th>
+              <th>Échéance</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (impots.length === 0) {
+              <tr><td colspan="6" class="text-center">Aucun impôt trouvé.</td></tr>
+            }
+            @for (i of impots; track i.id) {
+              <tr>
+                <td><strong>{{ i.contribuable_nom }}</strong></td>
+                <td>{{ i.type_impot }}</td>
+                <td>{{ i.montant | number:'1.0-0' }} FCFA</td>
+                <td>{{ i.date_echeance | date:'dd/MM/yyyy' }}</td>
+                <td><span class="badge" [ngClass]="getStatutClass(i.statut)">{{ getStatutLabel(i.statut) }}</span></td>
+                <td class="actions">
+                  <button class="btn-edit" (click)="openEditModal(i)" title="Modifier"><i class="bi bi-pencil"></i></button>
+                  <button class="btn-delete" (click)="delete(i.id!)" title="Supprimer"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (showModal) {
+        <div class="modal-overlay" (click)="closeModal()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <h4>{{ isEditing ? 'Modifier l\'impôt' : 'Nouvel impôt' }}</h4>
+              <button (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              @if (errorMessage) { <div class="alert-error" style="margin: 0 24px 16px;">{{ errorMessage }}</div> }
+              
+              <div class="form-group">
+                <label>Contribuable *</label>
+                <select formControlName="contribuable">
+                  <option value="" disabled>Sélectionner un contribuable</option>
+                  @for (c of contribuables; track c.id) {
+                    <option [value]="c.id">{{ c.nom }} {{ c.prenom }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Type d'impôt *</label>
+                  <select formControlName="type_impot">
+                    <option value="" disabled>Sélectionner</option>
+                    @for (t of typesImpot; track t.value) {
+                      <option [value]="t.value">{{ t.label }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Montant (FCFA) *</label>
+                  <input type="number" formControlName="montant" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Date d'échéance *</label>
+                  <input type="date" formControlName="date_echeance" />
+                </div>
+                <div class="form-group">
+                  <label>Statut</label>
+                  <select formControlName="statut">
+                    <option value="en_attente">En attente</option>
+                    <option value="paye">Payé</option>
+                    <option value="en_retard">En retard</option>
+                    <option value="annule">Annulé</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Description</label>
+                <textarea formControlName="description" rows="3"></textarea>
+              </div>
+
+              <div class="modal-actions">
+                <button type="button" class="btn-cancel" (click)="closeModal()">Annuler</button>
+                <button type="submit" class="btn-save" [disabled]="isSubmitting">
+                  @if (isSubmitting) { <i class="bi bi-hourglass-split"></i> Enregistrement... } @else { {{ isEditing ? 'Modifier' : 'Enregistrer' }} }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

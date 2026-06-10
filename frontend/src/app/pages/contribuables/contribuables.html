@@ -1,0 +1,116 @@
+<div class="app-layout">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+    <app-navbar></app-navbar>
+    <div class="page-content">
+      <div class="page-header">
+        <div>
+          <h2>Contribuables</h2>
+          <p>{{ contribuables.length }} contribuable(s) enregistré(s)</p>
+        </div>
+        @if (peutModifier) {
+          <button class="btn-add" (click)="openAddModal()"><i class="bi bi-plus-lg"></i> Nouveau Contribuable</button>
+        }
+      </div>
+
+      @if (successMessage) { <div class="alert-success"><i class="bi bi-check-circle"></i> {{ successMessage }}</div> }
+      @if (errorMessage && !showModal) { <div class="alert-error"><i class="bi bi-exclamation-triangle"></i> {{ errorMessage }}</div> }
+
+      <div class="search-bar">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Rechercher par nom, prénom ou NIF..." [(ngModel)]="searchTerm" />
+      </div>
+
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Nom & Prénom</th>
+              <th>NIF</th>
+              <th>Type</th>
+              <th>Téléphone</th>
+              <th>Email</th>
+              @if (peutModifier) { <th>Actions</th> }
+            </tr>
+          </thead>
+          <tbody>
+            @if (filteredContribuables.length === 0) {
+              <tr>
+                <td [attr.colspan]="peutModifier ? 6 : 5" class="text-center">Aucun contribuable trouvé.</td>
+              </tr>
+            }
+            @for (c of filteredContribuables; track c.id) {
+              <tr>
+                <td><strong>{{ c.nom }} {{ c.prenom }}</strong></td>
+                <td><span class="badge badge-secondary">{{ c.nif }}</span></td>
+                <td>
+                  <span class="badge" [ngClass]="c.type_contribuable === 'entreprise' ? 'badge-blue' : 'badge-green'">
+                    {{ c.type_contribuable === 'entreprise' ? 'Entreprise' : 'Particulier' }}
+                  </span>
+                </td>
+                <td>{{ c.telephone || '—' }}</td>
+                <td>{{ c.email || '—' }}</td>
+                @if (peutModifier) {
+                  <td class="actions">
+                    <button class="btn-edit" (click)="openEditModal(c)" title="Modifier"><i class="bi bi-pencil"></i></button>
+                    <button class="btn-delete" (click)="delete(c.id!)" title="Supprimer"><i class="bi bi-trash"></i></button>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (showModal) {
+        <div class="modal-overlay" (click)="closeModal()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <h4>{{ isEditing ? 'Modifier le contribuable' : 'Nouveau contribuable' }}</h4>
+              <button (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+              @if (errorMessage) { <div class="alert-error" style="margin: 0 24px 16px;">{{ errorMessage }}</div> }
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Nom *</label>
+                  <input type="text" formControlName="nom" />
+                  @if (form.get('nom')?.invalid && form.get('nom')?.touched) { <span class="error-msg">Requis.</span> }
+                </div>
+                <div class="form-group">
+                  <label>Prénom</label>
+                  <input type="text" formControlName="prenom" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>NIF *</label>
+                  <input type="text" formControlName="nif" />
+                  @if (form.get('nif')?.invalid && form.get('nif')?.touched) { <span class="error-msg">Requis.</span> }
+                </div>
+                <div class="form-group">
+                  <label>Type</label>
+                  <select formControlName="type_contribuable">
+                    <option value="particulier">Particulier</option>
+                    <option value="entreprise">Entreprise</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Téléphone</label><input type="text" formControlName="telephone" /></div>
+                <div class="form-group"><label>Email</label><input type="email" formControlName="email" /></div>
+              </div>
+              <div class="form-group"><label>Adresse</label><textarea formControlName="adresse" rows="3"></textarea></div>
+              <div class="modal-actions">
+                <button type="button" class="btn-cancel" (click)="closeModal()">Annuler</button>
+                <button type="submit" class="btn-save" [disabled]="isSubmitting">
+                  @if (isSubmitting) { <i class="bi bi-hourglass-split"></i> Enregistrement... } @else { {{ isEditing ? 'Modifier' : 'Enregistrer' }} }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
