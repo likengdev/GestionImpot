@@ -1,9 +1,12 @@
 <aside class="sidebar">
+
+  <!-- Logo -->
   <div class="sidebar-header">
-    <i class="bi bi-building"></i>
+    <i class="bi bi-building-fill"></i>
     <span>GestImpôts</span>
   </div>
 
+  <!-- Profil -->
   <div class="user-info">
     <div class="user-avatar" [style.background]="getRoleColor()">
       {{ username.charAt(0).toUpperCase() }}
@@ -14,6 +17,7 @@
     </div>
   </div>
 
+  <!-- Menu -->
   <nav class="sidebar-nav">
     <ul>
       @for (item of menuItems; track item.route) {
@@ -27,10 +31,12 @@
     </ul>
   </nav>
 
+  <!-- Déconnexion -->
   <div class="sidebar-footer">
     <button class="btn-logout" (click)="logout()">
       <i class="bi bi-box-arrow-left"></i>
       <span>Déconnexion</span>
     </button>
   </div>
+
 </aside>
