@@ -3,15 +3,82 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg-page, #f4f6f9);
-  color: var(--text-primary, #212121);
+// ══════════════════════════════════════════
+// THÈME CLAIR (défaut)
+// ══════════════════════════════════════════
+body, body.theme-light {
+  --bg-page:      #f1f5f9;
+  --bg-card:      #ffffff;
+  --text-primary: #0f172a;
+  --text-sec:     #64748b;
+  --border:       #e2e8f0;
+  --shadow:       0 2px 16px rgba(0,0,0,0.07);
+  --input-bg:     #f8fafc;
+  background: var(--bg-page);
+  color: var(--text-primary);
   transition: background 0.3s, color 0.3s;
 }
 
-// Appliquer les variables CSS sur tous les composants en mode sombre
+// ══════════════════════════════════════════
+// THÈME SOMBRE
+// ══════════════════════════════════════════
 body.theme-dark {
-  .sidebar { background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important; }
-  input, select, textarea { background: #1e293b !important; color: #f1f5f9 !important; border-color: #334155 !important; }
+  --bg-page:      #0f172a;
+  --bg-card:      #1e293b;
+  --text-primary: #f1f5f9;
+  --text-sec:     #94a3b8;
+  --border:       #334155;
+  --shadow:       0 2px 16px rgba(0,0,0,0.4);
+  --input-bg:     #0f172a;
+  background: var(--bg-page);
+  color: var(--text-primary);
+
+  // Inputs et selects en mode sombre
+  input, select, textarea {
+    background: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+  }
+
+  // Tableaux
+  table { color: var(--text-primary); }
+  th { color: var(--text-sec) !important; background: var(--bg-page) !important; }
+
+  // Modales
+  .modal-card { background: var(--bg-card) !important; }
+
+  // Cards génériques
+  .card, .chart-card, .table-card, .summary-card {
+    background: var(--bg-card) !important;
+    border-color: var(--border) !important;
+  }
+}
+
+// ══════════════════════════════════════════
+// LAYOUT DE BASE
+// ══════════════════════════════════════════
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-page);
+  transition: background 0.3s;
+
+  .main-content {
+    margin-left: 220px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .page-content {
+      margin-top: 60px;
+      padding: 28px 32px;
+      background: var(--bg-page);
+      min-height: calc(100vh - 60px);
+      transition: background 0.3s;
+    }
+  }
 }
