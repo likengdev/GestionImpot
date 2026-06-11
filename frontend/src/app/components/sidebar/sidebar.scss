@@ -1,99 +1,140 @@
+// Variables héritées du thème
 .sidebar {
-  width: 240px;
+  width: 220px;
   min-height: 100vh;
-  background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+  background: #1a237e;
   display: flex;
   flex-direction: column;
   position: fixed;
   left: 0; top: 0;
   z-index: 1000;
-  box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+  box-shadow: 3px 0 12px rgba(0,0,0,0.18);
 
+  // ── En-tête logo ──────────────────────
   .sidebar-header {
-    padding: 20px;
-    color: white;
-    font-size: 18px;
-    font-weight: 800;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 18px 20px 14px;
     display: flex;
     align-items: center;
     gap: 10px;
-    i { font-size: 22px; color: #64b5f6; }
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+
+    i { font-size: 20px; color: #90caf9; }
+    span { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: 0.3px; }
   }
 
+  // ── Profil utilisateur ─────────────────
   .user-info {
-    padding: 16px 20px;
+    padding: 14px 20px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
 
     .user-avatar {
-      width: 40px; height: 40px;
+      width: 32px;        // ← réduit (était 40px)
+      height: 32px;
       border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 800; color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: white;
       flex-shrink: 0;
     }
 
     .user-details {
-      display: flex; flex-direction: column; gap: 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
       overflow: hidden;
+      min-width: 0;
 
       .user-name {
-        font-size: 13px; font-weight: 700; color: white;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        font-size: 13px;
+        font-weight: 700;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
-
       .user-role {
-        font-size: 11px; font-weight: 600;
+        font-size: 10px;
+        color: rgba(255,255,255,0.65);
+        font-weight: 500;
       }
     }
   }
 
+  // ── Navigation ────────────────────────
   .sidebar-nav {
     flex: 1;
-    padding: 8px 0;
+    padding: 10px 0;
     overflow-y: auto;
 
     ul { list-style: none; padding: 0; margin: 0; }
 
-    .nav-item {
+    .nav-item a {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px 20px;
-      color: rgba(255,255,255,0.7);
+      padding: 11px 20px;
+      color: rgba(255,255,255,0.78);
       text-decoration: none;
-      transition: all 0.2s;
-      font-size: 14px;
+      font-size: 13.5px;
+      font-weight: 500;
       border-left: 3px solid transparent;
-      i { font-size: 17px; width: 20px; flex-shrink: 0; }
+      transition: background 0.18s, color 0.18s, border-left-color 0.18s;
 
-      &:hover { background: rgba(255,255,255,0.1); color: white; }
+      i {
+        font-size: 16px;
+        width: 18px;
+        flex-shrink: 0;
+        text-align: center;
+      }
+
+      &:hover {
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+      }
+
       &.active {
         background: rgba(255,255,255,0.15);
-        color: white;
+        color: #fff;
+        font-weight: 700;
         border-left-color: #64b5f6;
-        font-weight: 600;
+
+        i { color: #90caf9; }
       }
     }
   }
 
+  // ── Pied : déconnexion ────────────────
   .sidebar-footer {
-    padding: 16px 20px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 14px 16px;
+    border-top: 1px solid rgba(255,255,255,0.12);
 
     .btn-logout {
-      display: flex; align-items: center; gap: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 14px;
       background: transparent;
       border: 1px solid rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.7);
-      padding: 10px 16px;
       border-radius: 8px;
-      cursor: pointer; width: 100%; font-size: 13px;
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+      cursor: pointer;
       transition: all 0.2s;
-      &:hover { background: rgba(220,38,38,0.2); color: white; border-color: rgba(220,38,38,0.5); }
+
+      i { font-size: 15px; }
+
+      &:hover {
+        background: rgba(220,38,38,0.25);
+        border-color: rgba(220,38,38,0.5);
+        color: #fff;
+      }
     }
   }
 }
