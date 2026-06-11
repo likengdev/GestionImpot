@@ -5,6 +5,13 @@
 
 body {
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f6f9;
-  color: #212121;
+  background: var(--bg-page, #f4f6f9);
+  color: var(--text-primary, #212121);
+  transition: background 0.3s, color 0.3s;
+}
+
+// Appliquer les variables CSS sur tous les composants en mode sombre
+body.theme-dark {
+  .sidebar { background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important; }
+  input, select, textarea { background: #1e293b !important; color: #f1f5f9 !important; border-color: #334155 !important; }
 }

@@ -89,7 +89,7 @@ export class Contribuables implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    this.form.markAllAsTouched(); if (this.form.invalid) { this.isSubmitting = false; return; }
     this.isSubmitting = true;
     const data = this.form.value;
 

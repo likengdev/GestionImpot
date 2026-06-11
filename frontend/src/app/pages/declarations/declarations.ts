@@ -119,7 +119,7 @@ export class Declarations implements OnInit {
   closeModal(): void { this.showModal = false; this.errorMessage = ''; this.isSubmitting = false; }
 
   onSubmit(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    this.form.markAllAsTouched(); if (this.form.invalid) { this.isSubmitting = false; return; }
     this.isSubmitting = true;
     const data = this.form.value;
 

@@ -60,7 +60,7 @@ export class Paiements implements OnInit {
   closeModal(): void { this.showModal = false; this.errorMessage = ''; this.isSubmitting = false; }
 
   onSubmit(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    this.form.markAllAsTouched(); if (this.form.invalid) { this.isSubmitting = false; return; }
     this.isSubmitting = true;
 
     this.paiementService.create(this.form.value).pipe(

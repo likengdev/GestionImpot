@@ -97,7 +97,7 @@ export class Utilisateurs implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    this.form.markAllAsTouched(); if (this.form.invalid) { this.isSubmitting = false; return; }
     if (this.isSubmitting) return;
     this.isSubmitting = true;
     this.errorMessage = '';

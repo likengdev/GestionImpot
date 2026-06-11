@@ -4,66 +4,55 @@
     <app-navbar></app-navbar>
 
     <div class="page-content">
+
+      <!-- En-tête -->
       <div class="page-header">
         <div>
-          <h2>Tableau de Bord</h2>
+          <h2>Dashboard</h2>
           <p>Vue d'ensemble de votre système fiscal</p>
         </div>
-        <div class="theme-picker-wrapper">
-          <button class="btn-theme-toggle" (click)="toggleThemePicker($event)">
-            <i class="bi bi-palette"></i> {{ getThemeLabel() }}
-          </button>
-          @if (showThemePicker) {
-            <div class="theme-panel">
-              <div class="theme-panel-title">Choisir un thème</div>
-              <div class="theme-options">
-                @for (theme of themes; track theme.key) {
-                  <button class="theme-option" [class.active]="currentTheme === theme.key" (click)="selectTheme(theme.key)">
-                    <div class="theme-swatch" [style.background]="theme.primary"></div>
-                    <span class="theme-name">{{ theme.label }}</span>
-                    @if (currentTheme === theme.key) {
-                      <i class="bi bi-check-lg theme-check"></i>
-                    }
-                  </button>
-                }
-              </div>
-            </div>
-          }
-        </div>
+        <button class="btn-theme" (click)="toggleTheme()" [title]="isDark ? 'Passer en mode clair' : 'Passer en mode sombre'">
+          <i class="bi" [ngClass]="isDark ? 'bi-sun-fill' : 'bi-moon-fill'"></i>
+          {{ isDark ? 'Mode clair' : 'Mode sombre' }}
+        </button>
       </div>
 
+      <!-- Cartes statistiques -->
       <div class="stats-grid">
         <div class="stat-card card-indigo">
           <div class="stat-icon-box"><i class="bi bi-people"></i></div>
           <div class="stat-info">
-            <span class="stat-value">{{ dashboardData.contribuables_enregistres | number }}</span>
-            <span class="stat-label">Contribuables enregistrés</span>
+            <span class="stat-label">Contribuables Enregistrés</span>
+            <span class="stat-value">{{ formatMontant(dashboardData.contribuables_enregistres) }}</span>
           </div>
         </div>
         <div class="stat-card card-emerald">
           <div class="stat-icon-box"><i class="bi bi-cash-stack"></i></div>
           <div class="stat-info">
-            <span class="stat-value">{{ formatMontant(dashboardData.total_impots_collectes) }}</span>
-            <span class="stat-label">Paiements collectés FCFA</span>
+            <span class="stat-label">Total Impôts Collectés</span>
+            <span class="stat-value">{{ formatMontant(dashboardData.total_impots_collectes) }} <small>FCFA</small></span>
           </div>
         </div>
         <div class="stat-card card-amber">
-          <div class="stat-icon-box"><i class="bi bi-exclamation-circle"></i></div>
+          <div class="stat-icon-box"><i class="bi bi-exclamation-triangle"></i></div>
           <div class="stat-info">
-            <span class="stat-value">{{ formatMontant(dashboardData.impots_impayes) }}</span>
-            <span class="stat-label">Impôts impayés FCFA</span>
+            <span class="stat-label">Impôts Impayés</span>
+            <span class="stat-value">{{ formatMontant(dashboardData.impots_impayes) }} <small>FCFA</small></span>
           </div>
         </div>
         <div class="stat-card card-rose">
           <div class="stat-icon-box"><i class="bi bi-shield-exclamation"></i></div>
           <div class="stat-info">
-            <span class="stat-value">{{ formatMontant(dashboardData.penalites_en_retard) }}</span>
-            <span class="stat-label">Pénalités en retard (FCFA)</span>
+            <span class="stat-label">Pénalités en Retard</span>
+            <span class="stat-value">{{ formatMontant(dashboardData.penalites_en_retard) }} <small>FCFA</small></span>
           </div>
         </div>
       </div>
 
+      <!-- Graphique + Activité récente -->
       <div class="charts-row">
+
+        <!-- Graphique revenus -->
         <div class="card">
           <div class="card-header">
             <h5><i class="bi bi-bar-chart"></i> Revenus Fiscaux Mensuels</h5>
@@ -72,6 +61,8 @@
             <canvas #revenusChart></canvas>
           </div>
         </div>
+
+        <!-- Activité récente -->
         <div class="card">
           <div class="card-header">
             <h5><i class="bi bi-activity"></i> Activité Récente</h5>
@@ -96,26 +87,33 @@
             }
           </div>
         </div>
+
       </div>
 
+      <!-- Boutons d'action -->
       <div class="actions-row">
         @if (estAdmin()) {
           <button class="btn-action primary" routerLink="/contribuables">
             <i class="bi bi-person-plus"></i> Nouveau Contribuable
+            <i class="bi bi-arrow-right"></i>
           </button>
-          <button class="btn-action success" routerLink="/impots">
-            <i class="bi bi-plus-circle"></i> Gérer les Impôts
+          <button class="btn-action success" routerLink="/paiements">
+            <i class="bi bi-credit-card"></i> Enregistrer Paiement
+            <i class="bi bi-arrow-right"></i>
           </button>
         }
         @if (!estAdmin()) {
           <button class="btn-action primary" routerLink="/paiements">
             <i class="bi bi-credit-card"></i> Enregistrer Paiement
+            <i class="bi bi-arrow-right"></i>
           </button>
           <button class="btn-action success" routerLink="/declarations">
             <i class="bi bi-file-earmark-plus"></i> Soumettre Déclaration
+            <i class="bi bi-arrow-right"></i>
           </button>
         }
       </div>
+
     </div>
   </div>
 </div>

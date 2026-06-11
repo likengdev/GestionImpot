@@ -1,27 +1,72 @@
 <nav class="navbar-top">
+
+  <!-- Gauche : titre système -->
   <div class="navbar-left">
-    <h4><i class="bi bi-building"></i> Système de Gestion des Impôts</h4>
+    <i class="bi bi-building-fill"></i>
+    <div class="nav-title">
+      <span class="title-main">Système de Gestion des Impôts</span>
+      <span class="title-sub">{{ getExerciceFiscal() }} · République du Cameroun – MINFI</span>
+    </div>
   </div>
 
+  <!-- Centre : infos fiscales rapides -->
+  <div class="navbar-center">
+    <div class="nav-info-item">
+      <i class="bi bi-calendar3"></i>
+      <span>{{ currentTime | date:'EEEE d MMMM yyyy':'':'fr' }}</span>
+    </div>
+    <div class="nav-separator"></div>
+    <div class="nav-info-item">
+      <i class="bi bi-clock"></i>
+      <span>{{ currentTime | date:'HH:mm:ss' }}</span>
+    </div>
+    <div class="nav-separator"></div>
+    <div class="nav-info-item status-ok">
+      <i class="bi bi-circle-fill"></i>
+      <span>Système opérationnel</span>
+    </div>
+  </div>
+
+  <!-- Droite : profil utilisateur (sans déconnexion — dans la sidebar) -->
   <div class="navbar-right">
-    <div class="user-menu" (click)="toggleDropdown()">
-      <div class="user-avatar">
+    <div class="profile-zone" (click)="showProfile = !showProfile">
+      <div class="avatar" [style.background]="getRoleBadgeColor()">
         {{ username.charAt(0).toUpperCase() }}
       </div>
-      <div class="user-text">
-        <span class="user-name">{{ username }}</span>
-        <span class="user-role">{{ getRoleLabel() }}</span>
+      <div class="profile-text">
+        <span class="p-greeting">{{ getGreeting() }}, {{ username }}</span>
+        <span class="p-role">{{ getRoleLabel() }}</span>
       </div>
-      <i class="bi" [ngClass]="showDropdown ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      <i class="bi" [ngClass]="showProfile ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
 
-      @if (showDropdown) {
-        <div class="dropdown-menu-custom" (click)="$event.stopPropagation()">
-          <div class="dropdown-item-custom text-danger" (click)="logout()">
-            <i class="bi bi-box-arrow-right"></i>
-            <span>Déconnexion</span>
+      @if (showProfile) {
+        <div class="profile-dropdown" (click)="$event.stopPropagation()">
+          <div class="pd-header">
+            <div class="pd-avatar" [style.background]="getRoleBadgeColor()">
+              {{ username.charAt(0).toUpperCase() }}
+            </div>
+            <div>
+              <div class="pd-name">{{ username }}</div>
+              <div class="pd-role">{{ getRoleLabel() }}</div>
+            </div>
+          </div>
+          <div class="pd-divider"></div>
+          <div class="pd-info">
+            <i class="bi bi-shield-check"></i>
+            <span>Session active et sécurisée</span>
+          </div>
+          <div class="pd-info">
+            <i class="bi bi-calendar-check"></i>
+            <span>{{ currentTime | date:'d MMM yyyy':'':'fr' }}</span>
+          </div>
+          <div class="pd-divider"></div>
+          <div class="pd-note">
+            <i class="bi bi-info-circle"></i>
+            Pour vous déconnecter, utilisez le bouton dans le menu latéral.
           </div>
         </div>
       }
     </div>
   </div>
+
 </nav>

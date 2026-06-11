@@ -1,6 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -13,36 +12,47 @@ import { AuthService } from '../../services/auth.service';
 export class Navbar implements OnInit {
   username = '';
   role = '';
-  showDropdown = false;
+  currentTime = new Date();
+  showProfile = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
     this.username = this.authService.getUsername();
     this.role = this.authService.getRole();
-  }
-
-  getRoleLabel(): string {
-    const labels: any = {
-      'superadmin': 'DGI',
-      'admin': 'Chef de Bureau',
-      'gestionnaire': 'Agent Fiscal'
-    };
-    return labels[this.role] || '';
+    // Horloge en temps réel
+    setInterval(() => this.currentTime = new Date(), 1000);
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.user-menu')) {
-      this.showDropdown = false;
+  onDocumentClick(e: MouseEvent): void {
+    if (!(e.target as HTMLElement).closest('.profile-zone')) {
+      this.showProfile = false;
     }
   }
 
-  toggleDropdown(): void { this.showDropdown = !this.showDropdown; }
+  getRoleLabel(): string {
+    const m: any = {
+      superadmin: 'DGI – Super Admin',
+      admin: 'Chef de Bureau',
+      gestionnaire: 'Agent Fiscal'
+    };
+    return m[this.role] || 'Utilisateur';
+  }
 
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  getRoleBadgeColor(): string {
+    const m: any = { superadmin: '#f59e0b', admin: '#3b82f6', gestionnaire: '#10b981' };
+    return m[this.role] || '#9ca3af';
+  }
+
+  getGreeting(): string {
+    const h = this.currentTime.getHours();
+    if (h < 12) return 'Bonjour';
+    if (h < 18) return 'Bon après-midi';
+    return 'Bonsoir';
+  }
+
+  getExerciceFiscal(): string {
+    return `Exercice ${this.currentTime.getFullYear()}`;
   }
 }
