@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://pythonanywhere.com'
+  apiUrl: 'http://127.0.0'
 };
