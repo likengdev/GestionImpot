@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  apiUrl: 'https://kant14.pythonanywhere.com/api'
+  production: false,
+  apiUrl: 'http://127.0.0.1:8000/api'
 };
