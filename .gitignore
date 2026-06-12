@@ -16,3 +16,4 @@ __pycache__/
 # Angular
 node_modules/
 dist/
+.angular/
