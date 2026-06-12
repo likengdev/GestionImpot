@@ -43,6 +43,7 @@ class RegisterView(generics.CreateAPIView):
                 'email_envoye': serializer.email_envoye,
                 'erreur_email': serializer.erreur_email
             }, status=status.HTTP_201_CREATED)
+        print("❌ REGISTER ERRORS:", serializer.errors)  # DEBUG
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserListView(generics.ListAPIView):
@@ -222,7 +223,7 @@ class DashboardView(generics.GenericAPIView):
         return Response({
             'contribuables_enregistres': contribuables.count(),
             'total_impots_collectes': float(paiements.aggregate(Sum('montant_paye'))['montant_paye__sum'] or 0),
-            'impots_impayes': float(impots.filter(statut='en_attente').aggregate(Sum('montant'))['montant__sum'] or 0),
+            'impots_impayes': float(impots.filter(statut__in=['en_attente', 'en_retard']).aggregate(Sum('montant'))['montant__sum'] or 0),
             'penalites_en_retard': float(penalites.filter(est_payee=False).aggregate(Sum('montant'))['montant__sum'] or 0),
             'activite_recente': activite_recente,
             'role': role,

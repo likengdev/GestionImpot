@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy, AfterViewInit,
-  ElementRef, ViewChild, HostListener
+  HostListener
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -20,8 +20,6 @@ Chart.register(...registerables);
   styleUrl: './dashboard.scss'
 })
 export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
-
-  @ViewChild('revenusChart') revenusChartRef!: ElementRef<HTMLCanvasElement>;
 
   dashboardData: any = {
     contribuables_enregistres: 0,
@@ -95,24 +93,30 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadChart(): void {
-    if (!this.revenusChartRef?.nativeElement) return;
     this.dashboardService.getRevenusMensuels().subscribe({
       next: (data) => {
-        if (this.chart) this.chart.destroy();
-        const ctx = this.revenusChartRef.nativeElement.getContext('2d');
+        // Détruire proprement l'ancien chart
+        if (this.chart) { this.chart.destroy(); this.chart = null; }
+
+        // Accès par ID fixe — évite les problèmes de ViewChild
+        const canvas = document.getElementById('revenusChartCanvas') as HTMLCanvasElement;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        const gridColor = this.isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+        const gridColor  = this.isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
         const labelColor = this.isDark ? '#94a3b8' : '#64748b';
+        const moisLabels = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+        const valeurs    = data?.data ?? new Array(12).fill(0);
 
         this.chart = new Chart(ctx, {
           type: 'bar',
           data: {
-            labels: data?.labels ?? [],
+            labels: moisLabels,
             datasets: [
               {
                 label: 'Revenus (FCFA)',
-                data: data?.data ?? [],
+                data: valeurs,
                 backgroundColor: 'rgba(26,35,126,0.75)',
                 borderColor: '#1a237e',
                 borderWidth: 2,
@@ -121,7 +125,7 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
               },
               {
                 label: 'Tendance',
-                data: data?.data ?? [],
+                data: valeurs,
                 type: 'line',
                 borderColor: '#f59e0b',
                 backgroundColor: 'rgba(245,158,11,0.08)',
@@ -136,11 +140,9 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
           options: {
             responsive: true,
             maintainAspectRatio: true,
+            animation: { duration: 600 },
             plugins: {
-              legend: {
-                position: 'top',
-                labels: { color: labelColor, font: { size: 12 } }
-              }
+              legend: { position: 'top', labels: { color: labelColor, font: { size: 12 } } }
             },
             scales: {
               y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: labelColor } },

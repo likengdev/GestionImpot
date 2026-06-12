@@ -1,5 +1,6 @@
 import threading
 import smtplib
+import ssl
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -12,8 +13,23 @@ def _envoyer_email_et_mettre_a_jour(notification, contribuable_email, sujet, mes
             return
 
         if not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
-            print("⚠️  Configuration SMTP manquante : EMAIL_HOST_USER ou EMAIL_HOST_PASSWORD absent.")
+            print("⚠️  Configuration SMTP manquante.")
             return
+
+        import django.core.mail
+        connection = django.core.mail.get_connection(
+            backend='django.core.mail.backends.smtp.EmailBackend',
+            host=settings.EMAIL_HOST,
+            port=settings.EMAIL_PORT,
+            username=settings.EMAIL_HOST_USER,
+            password=settings.EMAIL_HOST_PASSWORD,
+            use_tls=settings.EMAIL_USE_TLS,
+            use_ssl=getattr(settings, 'EMAIL_USE_SSL', False),
+            timeout=settings.EMAIL_TIMEOUT,
+        )
+        connection.ssl_context = ssl.create_default_context()
+        connection.ssl_context.check_hostname = False
+        connection.ssl_context.verify_mode = ssl.CERT_NONE
 
         send_mail(
             subject=sujet,
@@ -21,15 +37,16 @@ def _envoyer_email_et_mettre_a_jour(notification, contribuable_email, sujet, mes
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[contribuable_email],
             fail_silently=False,
+            connection=connection,
         )
         notification.email_envoye = True
         notification.save()
         print(f"✅ Email de notification envoyé à {contribuable_email}")
 
     except smtplib.SMTPAuthenticationError:
-        print("❌ Erreur SMTP : authentification échouée. Vérifiez EMAIL_HOST_USER / EMAIL_HOST_PASSWORD.")
+        print("❌ Erreur SMTP : authentification échouée.")
     except smtplib.SMTPException as e:
-        print(f"❌ Erreur SMTP lors de l'envoi à {contribuable_email} : {e}")
+        print(f"❌ Erreur SMTP : {e}")
     except Exception as e:
         print(f"❌ Erreur inattendue lors de l'envoi à {contribuable_email} : {e}")
 

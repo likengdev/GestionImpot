@@ -1,5 +1,6 @@
 import threading
 import smtplib
+import ssl
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -10,6 +11,25 @@ def _envoyer_email_identifiants(username, email, first_name, mot_de_passe, role_
         if not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
             print("Email non envoyé : EMAIL_HOST_USER ou EMAIL_HOST_PASSWORD manquant.")
             return False, "Configuration SMTP manquante."
+
+        # Contexte SSL sans vérification stricte du certificat (contourne CERTIFICATE_VERIFY_FAILED)
+        import django.core.mail
+        connection = django.core.mail.get_connection(
+            backend='django.core.mail.backends.smtp.EmailBackend',
+            host=settings.EMAIL_HOST,
+            port=settings.EMAIL_PORT,
+            username=settings.EMAIL_HOST_USER,
+            password=settings.EMAIL_HOST_PASSWORD,
+            use_tls=settings.EMAIL_USE_TLS,
+            use_ssl=getattr(settings, 'EMAIL_USE_SSL', False),
+            timeout=settings.EMAIL_TIMEOUT,
+            ssl_certfile=None,
+            ssl_keyfile=None,
+        )
+        # Patch : désactiver la vérification du certificat SSL
+        connection.ssl_context = ssl.create_default_context()
+        connection.ssl_context.check_hostname = False
+        connection.ssl_context.verify_mode = ssl.CERT_NONE
 
         send_mail(
             subject="GestImpôts — Vos identifiants de connexion",
@@ -32,6 +52,7 @@ GestImpôts""",
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[email],
             fail_silently=False,
+            connection=connection,
         )
         print(f"✅ Email envoyé à {email}")
         return True, None

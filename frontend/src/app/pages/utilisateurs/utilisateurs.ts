@@ -28,7 +28,7 @@ export class Utilisateurs implements OnInit {
   constructor(private authService: AuthService, private fb: FormBuilder) {
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.email]],
       first_name: [''],
       last_name: [''],
       role: ['gestionnaire', Validators.required]
@@ -96,26 +96,38 @@ export class Utilisateurs implements OnInit {
     });
   }
 
+  rawPassword = '';
+
+  copierMotDePasse(): void {
+    const text = this.rawPassword;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Mot de passe copié dans le presse-papier !');
+      });
+    }
+  }
+
   onSubmit(): void {
     this.form.markAllAsTouched(); if (this.form.invalid) { this.isSubmitting = false; return; }
     if (this.isSubmitting) return;
     this.isSubmitting = true;
     this.errorMessage = '';
 
-    this.authService.register(this.form.value).pipe(
+    // Nettoyer les champs vides avant envoi — évite les erreurs de validation backend
+    const payload: any = { ...this.form.value };
+    if (!payload.email) delete payload.email;
+    if (!payload.first_name) delete payload.first_name;
+    if (!payload.last_name) delete payload.last_name;
+
+    this.authService.register(payload).pipe(
       finalize(() => { this.isSubmitting = false; }) // 🔑 Garantit la réactivation
     ).subscribe({
       next: (res: any) => {
         this.closeModal(); this.loadUsers();
-        if (res.email_envoye) {
-          this.successMessage = `Compte "${res.username}" créé. Email envoyé à ${res.email}.`;
-          this.passwordMessage = `Mot de passe (copie de secours) : ${res.mot_de_passe}`;
-        } else {
-          this.successMessage = `Compte "${res.username}" créé.`;
-          this.passwordMessage = `Mot de passe généré : ${res.mot_de_passe}`;
-          if (res.erreur_email) { this.errorMessage = `Email non envoyé : ${res.erreur_email}`; }
-        }
-        setTimeout(() => { this.successMessage = ''; this.passwordMessage = ''; this.errorMessage = ''; }, 20000);
+        this.rawPassword = res.mot_de_passe || '';
+        const roleLabel = this.getRoleLabel(res.role || this.form.value.role);
+        this.successMessage = `Compte "${res.username}" (${roleLabel}) créé avec succès.`;
+        this.passwordMessage = `Mot de passe par défaut : ${res.mot_de_passe}  —  L'utilisateur peut se connecter immédiatement.`;
       },
       error: (err) => {
         const errors = err.error;
