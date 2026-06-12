@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://ton-api.onrender.com/api'
+  apiUrl: 'https://kant14.pythonanywhere.com/api'
 };
