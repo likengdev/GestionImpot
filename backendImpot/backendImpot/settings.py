@@ -9,8 +9,6 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -105,11 +103,29 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
 }
 
+# ══════════════════════════════════════════
+# HOSTS ET CORS — lus depuis le .env
+# ══════════════════════════════════════════
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:4200')
+PYTHONANYWHERE_HOST = config('PYTHONANYWHERE_HOST', default='localhost')
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    PYTHONANYWHERE_HOST,
+]
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
+    'http://localhost:4200',
+    FRONTEND_URL,
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.vercel\.app$",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com').strip()
